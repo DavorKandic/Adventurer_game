@@ -3,6 +3,12 @@ from random import randint
 import time
 import sys
 
+# Global variables
+
+winning_amount = 300
+arena_fee = 15
+
+# Player start variables
 
 life = 100
 mana = 100
@@ -16,187 +22,173 @@ goldlist=[0]
 damagelist=[0,0]
 evadelist=[0,0]
 
-def dmg(lifelist,manalist,damagelist):
- dmls_length=len(damagelist)
- for i in range(dmls_length):
-   damagelist.pop()
- damagelist.extend(lifelist)
- damagelist.extend(manalist)
- return damagelist
+def calculate_damage(lifelist,manalist,damagelist):
+    dmls_length=len(damagelist)
+    for i in range(dmls_length):
+        damagelist.pop()
+    damagelist.extend(lifelist)
+    damagelist.extend(manalist)
+    return damagelist
 
 def evade(lifelist,manalist,evadelist):
- evls_length=len(evadelist)
- for i in range(evls_length):
-   evadelist.pop()
- evadelist.extend(lifelist)
- evadelist.extend(manalist)
- return evadelist
+    evls_length=len(evadelist)
+    for i in range(evls_length):
+        evadelist.pop()
+    evadelist.extend(lifelist)
+    evadelist.extend(manalist)
+    return evadelist
+
+def user_input():
+    try:
+        return int(input('Enter number of your choice::')) 
+    except ValueError:
+            print('Wrong input! Please enter valid number.')
+
+
+def prompt_loop(end_value: int):
+    while True:
+        user_choice = user_input()
+        if user_choice in tuple(range(1, end_value)):
+            break
+    return user_choice
 
 
 
-def journey (life,mana,gold,damage,lifelist,manalist,goldlist):
-    x=randint(1,12)
+
+def journey ():
+    global life, mana, gold, damage, lifelist, manalist, goldlist
+    x = randint(1, 12)
     if x == 1:
         print('You were victim of raiders attack!')
         if damage > 50:
               print('You killed them all and took their posessions, you crazy destroyer!')
               goldlist+=[15]
-              return goldlist
         elif damage > 30:
               lifelist+=[-5]
               print('It was tough, but you show them who is the boss!')
-              return lifelist
         else:
           lifelist+=[-20]
           if gold >= 10:
               goldlist+=[-10]
-              return lifelist,goldlist
           else:
               manalist+=[-10]
-              return lifelist,manalist
-
     elif x == 2:
         print('You passed through vampiric aura forest!')
-        if mana>=20 and life >=50:
-              manalist+=[-20]
-              return manalist
-        elif mana>=20 and life <50:
-              lifelist+=[25]
-              manalist+=[-20]
-              return lifelist,manalist
-        elif mana<20 and life >= 50:
-              lifelist+=[-30]
-              return lifelist
-
+        if mana >= 20 and life >= 50:
+              manalist += [-20]
+        elif mana >= 20 and life < 50:
+              lifelist += [25]
+              manalist += [-20]
+        elif mana < 20 and life >= 50:
+              lifelist += [-30]
     elif x == 3:
         print('You found hidden stash that belongs to raiders.')
-        goldlist+=[35]
-        lifelist+=[15]
-        manalist+=[10]
-        return goldlist,manalist,lifelist
-
+        goldlist += [35]
+        lifelist += [15]
+        manalist += [10]
     elif x == 4:
         print('You found abandoned supermarket.')
-        lifelist+=[35]
-        manalist+=[15]
-        goldlist+=[20]
-        return lifelist,manalist,goldlist
-
+        lifelist += [35]
+        manalist += [15]
+        goldlist += [20]
     elif x == 5:
         if mana > 250:
-            print('Your powerfull psyonic aura has scarred hidden Rad-Snake!\nShe has ran away, leaving one of her expensive eggs.Bingo!')
-            print('But toxins from the egg damage your skin.')
-            lifelist+=[-25]
-            goldlist+=[15]
-            return lifelist,goldlist
+            print("""Your powerfull psyonic aura has scarred hidden Rad-Snake!
+            She has ran away, leaving one of her expensive eggs.Bingo!
+            But toxins from the egg damage your skin.""")
+            lifelist += [-25]
+            goldlist += [15]
         else:
-          print('You have been bitten by poisonous mutated Rad-Snake!')
-          if life >= 150:
-               lifelist+=[-125]
-               return lifelist
-          elif life >= 100:
-               lifelist+=[-75]
-               return lifelist
-          else:
-               lifelist+=[-50]
-               return lifelist
-
+            print('You have been bitten by poisonous mutated Rad-Snake!')
+            if life >= 150:
+                 lifelist += [-125]
+            elif life >= 100:
+                 lifelist += [-75]
+            else:
+                 lifelist += [-50]
     elif x == 6:
-        print('You have found and ate some \'magic\' mushrooms. You have some unreal visions, but you feel little sick now.')
-        manalist+=[15]
-        lifelist+=[-20]
-        return manalist,lifelist
-
+        print("""You have found and ate some \'magic\' mushrooms. 
+        You have some unreal visions, but you feel little sick now.""")
+        manalist += [15]
+        lifelist += [-20]
     elif x == 7:
-        print('You found members of Cyber-Scientology cult. Those strange felows share their food with you \nand give you some of coins they have. They explained to you their strange beliefs.\nThey believe that whole Universe is just computer program!\nYou find it funny, but you feel your spirituality have risen...')
-        lifelist+=[5]
-        manalist+=[5]
-        goldlist+=[5]
-        return lifelist,manalist,goldlist
-
+        print("""You found members of Cyber-Scientology cult. 
+        Those strange felows share their food with you 
+        and give you some of coins they have. 
+        They explained to you their strange beliefs.
+        They believe that whole Universe is just computer program!
+        You find it funny, but you feel your spirituality have risen...""")
+        lifelist += [5]
+        manalist += [5]
+        goldlist += [5]
     elif x == 8:
         print('You have found a bag of gold!')
-        goldlist+=[25]
-        return goldlist
-
-
+        goldlist += [25]
     elif x == 9:
         print('You have found a package of meat-cans and energy-drinks!')
-        lifelist+=[25]
-        return lifelist
-
-    elif x== 10:
+        lifelist += [25]
+    elif x == 10:
         print('You have stepped on improvised landmine! It hurts like hell!')
-        lifelist+=[-30]
-        return lifelist
-
+        lifelist += [-30]
     elif x == 11:
-        print('You have searched for gold in river. You have found a little bit of it, but blood-sucking water worms have bitten your legs!')
-        goldlist+=[10]
-        lifelist+=[-15]
-        return goldlist,lifelist
-
+        print("""You have searched for gold in river. 
+        You have found a little bit of it, 
+        but blood-sucking water worms have bitten your legs!""")
+        goldlist += [10]
+        lifelist += [-15]
     elif x == 12:
-        print('You are suddenly feeling sick. With your Geiger-counter you discover that some\nof your gold is irradiated - you will have to throw it away!')
+        print("""You are suddenly feeling sick. 
+        With your Geiger-counter you discover that some
+        of your gold is irradiated - you will have to throw it away,
+        before radiation disease become serious!""")
         if gold >= 15:
-           goldlist+=[-15]
+           goldlist += [-15]
         else:
            goldlist.pop()
-        lifelist+=[-10]
-        return goldlist,lifelist
+        lifelist += [-10]
 
 
-
-def status(life,mana,gold,damage,evasion):
-    print('\n********\n')
+def show_player_stats(life,mana,gold,damage,evasion):
+    print('********')
     print('Your stats:\nLIFE:',life,'\nMANA:',mana,'\nGOLD:',gold,'\nDAMAGE:',damage,'\nEVASION:',evasion)
-    print('\n********\n')
+    print('********')
 
 
-def choose():
+def choose_player_action():
     print('It is time to choose your path adventurer! Choose wisely:\n 1 - Go on a journey to search for gold.'
           '\n 2 - Fight in Arena to win a prize.\n 3 - Go to hospital for healing (if you have gold!).\n 4 - Gamble at casino.')
-    while True:
-        try:
-            choice=int(input('Enter number of your choice::'))
-            break
-        except ValueError:
-            print('Wrong input! Please enter valid number.')
-
+    choice = prompt_loop(5)
     if choice == 1 :
                print('You put on your hat and backpack. Time to go on a journey...')
-               print('\n**********************************************************\n')
-               journey(life,mana,gold,damage,lifelist,manalist,goldlist)
-               print('\n**********************************************************\n')
-
-
+               print('**********************************************************')
+               journey()
+               print('**********************************************************')
     elif choice == 2:
                print('You decided to test your luck and your skills in the Arena. Prepare for battle!')
-               print('\n**********************************************************\n')
+               print('**********************************************************')
                combat(lifelist,goldlist,damagelist,evadelist,life,gold,damage,evade)
-               print('\n**********************************************************\n')
-
+               print('**********************************************************')
     elif choice == 3:
                print('\nYou are aware that your wounds need healing. But, it will cost you some gold...\n')
-               print('\n**********************************************************\n')
+               print('**********************************************************')
                hospital(lifelist,manalist,goldlist,gold)
-               print('\n**********************************************************\n')
-
+               print('**********************************************************')
     elif choice == 4:
                print('You decided to try your luck at casino. Good luck!')
-               print('\n**********************************************************\n')
+               print('**********************************************************')
                casino(gold,goldlist)
-               print('\n**********************************************************\n')
+               print('**********************************************************')
 
 
+def no_money_msg():
+    print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+    print('\nYou do not have enough money! See you when you can afford healing.\n')
+    print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
 
 
 def hospital(lifelist,manalist,goldlist,gold):
-    if gold<25:
-        print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-        print('\nYou do not have enough money! See you when you can afford healing.\n')
-        print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-
+    if gold < 25:
+        no_money_msg()
     else:
         while gold > 0:
             print('\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
@@ -204,58 +196,40 @@ def hospital(lifelist,manalist,goldlist,gold):
             \n2 - Medium healing package (life: +35, price: 50 gold)\n3 - Large healing package (life: +50, price: 75 gold)
             \n4 - Mana potion (mana: +25, price: 50 gold)\n5 - Rejuvenation potion (life: +35, mana: +35, price: 100 gold)
             \n6 - Turbo healing package (life: +125, price: 150 gold)\n7 - Not interested, thank you!''')
-
-            while True:
-                try:
-                    h=int(input('\nEnter your choice::'))
-                    break
-                except ValueError:
-                    print('Wrong input! Please enter valid number.')
-
-            if h ==1:
+            hospital_choice = prompt_loop(8)
+            if hospital_choice == 1:
                   print('You have bought Small healing package.')
-                  lifelist+=[15]
-                  goldlist+=[-25]
+                  lifelist += [15]
+                  goldlist += [-25]
                   return lifelist,goldlist
-
-            elif h == 2:
+            elif hospital_choice == 2:
                 if gold<50:
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-                  print('\nYou do not have enough money! See you when you can afford healing.\n')
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+                  no_money_msg()
                 else:
                   print('You have bought Medium healing package')
-                  lifelist+=[35]
-                  goldlist+=[-50]
+                  lifelist += [35]
+                  goldlist += [-50]
                   return lifelist,goldlist
-
-            elif h== 3:
-                if gold<75:
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-                  print('\nYou do not have enough money! See you when you can afford healing.\n')
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+            elif hospital_choice == 3:
+                if gold < 75:
+                  no_money_msg()
                 else:
                   print('You have bought Large healing package')
-                  lifelist+=[50]
-                  goldlist+=[-75]
+                  lifelist += [50]
+                  goldlist += [-75]
                   return lifelist,goldlist
-
-            elif h== 4:
+            elif hospital_choice == 4:
                 if gold<50:
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-                  print('\nYou do not have enough money! See you when you can afford healing.\n')
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+                  no_money_msg()
                 else:
                   print('You have bought Mana potion')
                   manalist+=[25]
                   goldlist+=[-50]
                   return manalist,goldlist
 
-            elif h== 5:
+            elif hospital_choice == 5:
                 if gold<100:
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-                  print('\nYou do not have enough money! See you when you can afford healing.\n')
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+                  no_money_msg()
                 else:
                   print('You have bought Rejuvenation potion')
                   lifelist+=[35]
@@ -263,18 +237,16 @@ def hospital(lifelist,manalist,goldlist,gold):
                   goldlist+=[-100]
                   return lifelist,manalist,goldlist
 
-            elif h== 6:
+            elif hospital_choice == 6:
                 if gold<150:
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
-                  print('\nYou do not have enough money! See you when you can afford healing.\n')
-                  print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+                  no_money_msg()
                 else:
                   print('You have bought Turbo healing package')
                   lifelist+=[125]
                   goldlist+=[-150]
                   return lifelist,goldlist
 
-            elif h== 7:
+            elif hospital_choice == 7:
                 print('\n********************************************************************\n')
                 print('\nSee you next time, good-bye!\n')
                 print('\n********************************************************************\n')
@@ -291,14 +263,7 @@ def casino(gold,goldlist):
         print('\nWelcome to Casino Royal. Try your luck. Get rich or lose your gold!\n')
         print('OK,listen up! This is DIGITAL_BET.Rules are simple:\nFirst, you place your bet\nThen you choose your lucky number(1-6)\nThen it is time to see the result\n')
         print('\nAnd if you had winning number, you get 3 times of more money than you placed on bet! Got it, right?\n')
-
-        while True:
-            try:
-                bet=int(input('How much money you want to place on bet?'))
-                break
-            except ValueError:
-                print('Wrong input! Please enter valid number.')
-
+        bet = prompt_loop(gold + 1)
         while gold - bet < 0:
                 print('You do not have that money, kiddo. C\'mon, be serious!')
                 while True:
@@ -316,7 +281,7 @@ def casino(gold,goldlist):
             lucky=int(input('Say your lucky number, kiddo. Remember, it\'s from 1 to 6!'))
             print('Your lucky number is',lucky)
             gamble=randint(1,3)
-            print('DIGITAL_BET shows number',gamble)
+            print('DIGITAL_BET shows number', gamble)
             if gamble == lucky:
                 print('Congrats! You did it, kiddo - you lucky bastard!')
                 prize=bet*3
@@ -339,8 +304,8 @@ def casino(gold,goldlist):
               return goldlist
 
 
-def traits(lifelist,manalist,goldlist):
-    global name
+def choose_player_traits():
+    global name, lifelist, manalist, goldlist
     print('OK,',name,'let\'s begin! Choose your traits:')
     print('''Possibilities:
     1 - Regular guy/girl (default values: life = 100, mana = 100, gold = 0)
@@ -356,21 +321,13 @@ def traits(lifelist,manalist,goldlist):
     powers are below the average)
     ***************************************************************************
     ''')
-
-    while True:
-        try:
-            birth=int(input('Enter number of your choice(1-4)::'))
-            break
-        except ValueError:
-            print('Wrong input! Please enter valid number.')
-
+    
+    birth = prompt_loop(5)
     if birth == 1:
        print('********************************************************')
        print('You choose default starting stats.')
        print('********************************************************')
        goldlist+=[35]
-       return lifelist,manalist,goldlist
-
     elif birth == 2:
          print('********************************************************')
          print('You are born with the golden spoon in your mouth.')
@@ -378,8 +335,6 @@ def traits(lifelist,manalist,goldlist):
          lifelist+=[-15]
          manalist+=[-15]
          goldlist+=[85]
-         return lifelist,manalist,goldlist
-
     elif birth == 3:
          print('********************************************************')
          print('''Other peoples sleep. You have visions of past and future.
@@ -388,8 +343,6 @@ def traits(lifelist,manalist,goldlist):
          print('********************************************************')
          lifelist+=[-25]
          manalist+=[150]
-         return lifelist,manalist,goldlist
-
     elif birth == 4:
          print('********************************************************')
          print('Kids in school called you Conan the Barbarian!')
@@ -398,12 +351,110 @@ def traits(lifelist,manalist,goldlist):
          manalist+=[-25]
 
 
-def combat(lifelist,goldlist,damagelist,evadelist,life,gold,damage,evasion):
-    if gold < 15:
-        print('You do not have enough money to\n pay fee on entrance of Arena. Sorry!')
+def is_any_fighter_lost(player_life, enemy_life):
+    global goldlist
+    if player_life > 0 and enemy_life <= 0:
+        print('YOU WIN!')
+        goldlist+=[250]
+    elif player_life <= 0 and enemy_life > 0:
+        print('YOU LOSE!')
+    elif player_life <= 0 and enemy_life <= 0:
+        print('IT\'S A DRAW!')
+
+
+def you_lose(player_life):
+    if player_life <= 0:
+        end_time = round (time.time() - start_time)
+        print('You are DEAD!!! GAME OVER')
+        print('Time of playing this game:',end_time,'seconds.')
+        time.sleep(3)
+        sys.exit()
+
+
+def you_won():
+    print('CONGRATULATIONS! You have won in this game!')
+    end_time = round (time.time() - start_time)
+    print('Time of playing this game:',end_time,'seconds.')
+    print('Your stats:\nLIFE:',life,'\nMANA:',mana,'\nGOLD:',gold)
+    time.sleep(3)
+    sys.exit()
+
+
+def action_success(action_number: int, subject: str, object: str, action: str):
+    action_number -= 1
+    body_region = ('HEAD', 'TORSO', 'LEGS')
+    if action == 'attack':
+        object_action = 'block'
+        print(f"{subject} {action}ed {object}'s {body_region[action_number]}!")
+    elif action == 'block':
+        object_action = 'attack'
+        print(f"{subject} {action}ed {object}'s {object_action} to the {body_region[action_number]}!")
+    print(f"{object}'s {object_action} failed!")
+
+
+def show_life_after_attack(actor_life: int, actor_name: str):
+    print('**********************')
+    print(f'{actor_name} life: {actor_life}')
+    print('**********************')
+
+
+def duel(enemy_name: str, enemy_life: int, enemy_damage: int, enemy_says: str):
+    global life, damage, evasion, lifelist, manalist, damagelist
+    print(f'You have chosen to fight against {enemy_name}.')
+    evasion = sum(evadelist) // 20
+    print('**********************')
+    print(f'Your life: {life}\nYour damage: {damage}\nYour evasion: {evasion}')
+    print(f'{enemy_name} life: {enemy_life}\n{enemy_name} damage: {enemy_damage}')
+    print('**********************')
+    print(f'{enemy_name} says: - {enemy_says}')
+    while enemy_life > 0 and life > 0:
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        print(f'{enemy_name} attacks!')
+        print('*****************************************')
+        enemy_attack = randint(1,3)
+        print('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\n')
+        player_block = prompt_loop(4)
+        if enemy_attack == player_block:
+            action_success(player_block, name, enemy_name, 'block')
+        else:
+            action_success(enemy_attack, enemy_name, name, 'attack')  
+            battlechance = randint(1, 100)    
+            num = sum(evadelist) // 20    
+            if battlechance >= 1 and battlechance <= num:
+                print(f'{name} succesfully evaded the attack!')
+            else:
+                lifelist += [-enemy_damage]
+                life = sum(lifelist)
+                calculate_damage(lifelist, manalist, damagelist)
+                damage = sum(damagelist) // 10
+                evade(lifelist, manalist, evadelist)
+                evasion = sum(evadelist) // 20
+                show_life_after_attack(life, name)
+                you_lose(life)
+        print('\nIt\'s YOUR TURN now. Choose your attack!')
+        print('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\n')
+        player_attack = prompt_loop(4)
+        print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+        print(f'{name} attacks!')
+        print('*****************************************')
+        enemy_block = randint(1, 3)
+        if player_attack == enemy_block:
+            action_success(enemy_block, enemy_name, name, 'block')
+        else:
+            action_success(player_attack, name, enemy_name, 'attack')
+            enemy_life -= damage
+            show_life_after_attack(enemy_life, enemy_name)
+    is_any_fighter_lost(life, enemy_life)
+
+
+def combat(lifelist, goldlist, damagelist, evadelist, life, gold, damage, evasion):
+    if gold < arena_fee:
+        print("""You do not have enough money to
+        pay fee on entrance of Arena. Sorry!""")
     else:
-        print('Welcome to the Arena - home and workplace of brave warriors.\nStandard fee of 15 gold have been paid.')
-        goldlist+=[15]
+        print('Welcome to the Arena - home and workplace of brave warriors.')
+        print(f'Standard fee of {arena_fee} gold have been paid.')
+        goldlist+=[-arena_fee]
         print('''
               Now choose your challenge:
               1 - fight against Rad-zombie  (prize: 35 gold)
@@ -413,724 +464,51 @@ def combat(lifelist,goldlist,damagelist,evadelist,life,gold,damage,evasion):
               5 - Let computer decide via random choice
               6 - I will skip the combat this time ...
               ''')
-
-        while True:
-            try:
-                opponent=int(input('Enter number of your choice::'))
-                break
-            except ValueError:
-                print('Wrong input! Please enter valid number.')
-
+        opponent = prompt_loop(7)
+        if opponent == 5:
+           opponent = randint(1,4)
         if opponent == 1:
-            print('You have chosen to fight against Rad-zombie.')
-            radzombielife = 125
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Rad-zombie life:',radzombielife)
-            print('Rad-zombie damage: 25')
-            print('**********************')
-            print('Rad-zombie says: - I\'M GONNA EAT YOUR BRAIN!!! AND YOUR TOES, ARRRRGH!!!')
-            while radzombielife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Rad-zombie attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-
-                while True:
-                    try:
-                        pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Rad-zombie attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Rad-zombie attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Rad-zombie attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-25]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nRad-zombie life:',radzombielife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-
-                while True:
-                    try:
-                        pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           radzombielife-=damage
-                           print('**********************')
-                           print('Rad-zombie life:',radzombielife)
-                           print('**********************')
-            if life > 0 and radzombielife <= 0:
-                print('YOU WIN!')
-                goldlist+=[35]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and radzombielife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and radzombielife <= 0:
-                print('IT\'S A DRAW!')
-
-
-        if opponent == 2:
-            print('You have chosen to fight against Human-gladiator.')
-            humgladlife = 175
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Human-gladiator life:',humgladlife)
-            print('Human-gladiator damage: 35')
-            print('**********************')
-            print('Human-gladiator says: - YOU DON\'T HAVE A CHANCE AGAINST WELL-TRAINED GLADIATOR!')
-            while humgladlife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Human-gladiator attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-
-                while True:
-                    try:
-                        pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Human-gladiator attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Human-gladiator attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Human-gladiator attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-35]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nHuman-gladiator life:',humgladlife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-
-                while True:
-                    try:
-                        pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           radzombielife-=damage
-                           print('*************************')
-                           print('Human-gladiator life:',humgladlife)
-                           print('*************************')
-            if life > 0 and humgladlife <= 0:
-                print('YOU WIN!')
-                goldlist+=[75]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and humgladlife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and humgladlife <= 0:
-                print('IT\'S A DRAW!')
-
-
-        if opponent == 3:
-            print('You have chosen to fight against Big-mutant-on-steroids.')
-            mutantlife = 250
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Big-mutant-on-steroids life:',mutantlife)
-            print('Big-mutant-on-steroids damage: 35')
-            print('**********************')
-            print('Big-mutant-on-steroids says: - GIT OVAH HERE, YOU LITTLE,PATHETIC WEAKLING!!!')
-            while mutantlife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Big-mutant-on-steroids attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-
-                while True:
-                    try:
-                        pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Big-mutant-on-steroids attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Big-mutant-on-steroids attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Big-mutant-on-steroids attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-50]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nBig-mutant-on-steroids life:',mutantlife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-
-                while True:
-                    try:
-                        pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           mutantlife-=damage
-                           print('*********************************')
-                           print('Big-mutant-on-steroids life:',mutantlife)
-                           print('*********************************')
-            if life > 0 and mutantlife <= 0:
-                print('YOU WIN!')
-                goldlist+=[150]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and mutantlife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and mutantlife <= 0:
-                print('IT\'S A DRAW!')
-
-
-        if opponent == 4:
-            print('You have chosen to fight against Cyborg.')
-            cyborglife = 300
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Cyborg life:',cyborglife)
-            print('Cyborg damage: 55')
-            print('**********************')
-            print('Cyborg says: - ...SCANNER:ACTIVATED...TARGET:LOCKED...ALL SYSTEMS ENGAGE!!!')
-            while cyborglife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Cyborg attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-
-                while True:
-                    try:
-                        pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Cyborg attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Cyborg attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Cyborg attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           critical=randint(1,6)
-                                           cyborgcalc=randint(1,6)
-                                           if critical == cyborgcalc:
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               print('You have received CRITICAL hit!')
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               lifelist+=[-100]
-                                               life=sum(lifelist)
-                                               dmg(lifelist,manalist,damagelist)
-                                               damage=sum(damagelist)//10
-                                               evade(lifelist,manalist,evadelist)
-                                               evasion=sum(evadelist)//20
-                                               print('*****************')
-                                               print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nBig-mutant-on-steroids life:',cyborglife)
-                                               print('*****************')
-
-                                           else:
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               print('You have been hit!')
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               lifelist+=[-50]
-                                               life=sum(lifelist)
-                                               dmg(lifelist,manalist,damagelist)
-                                               damage=sum(damagelist)//10
-                                               evade(lifelist,manalist,evadelist)
-                                               evasion=sum(evadelist)//20
-                                               print('*****************')
-                                               print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nCyborg life:',cyborglife)
-                                               print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-                while True:
-                    try:
-                        pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                        break
-                    except ValueError:
-                        print('Wrong input! Please enter valid number.')
-
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           cyborglife-=damage
-                           print('*********************************')
-                           print('Cyborg life:',cyborglife)
-                           print('*********************************')
-            if life > 0 and cyborglife <= 0:
-                print('YOU WIN!')
-                goldlist+=[250]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and cyborglife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and cyborglife <= 0:
-                print('IT\'S A DRAW!')
-                return goldlist,lifelist,damagelist,evadelist
-
-
-        elif opponent == 5:
-           opponent=randint(1,4)
-
-           if opponent == 1:
-            print('You have chosen to fight against Rad-zombie.')
-            radzombielife = 125
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Rad-zombie life:',radzombielife)
-            print('Rad-zombie damage: 25')
-            print('**********************')
-            print('Rad-zombie says: - I\'M GONNA EAT YOUR BRAIN!!! AND YOUR TOES, ARRRRGH!!!')
-            while radzombielife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Rad-zombie attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-                pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Rad-zombie attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Rad-zombie attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Rad-zombie attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-25]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nRad-zombie life:',radzombielife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-                pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           radzombielife-=damage
-                           print('**********************')
-                           print('Rad-zombie life:',radzombielife)
-                           print('**********************')
-            if life > 0 and radzombielife <= 0:
-                print('YOU WIN!')
-                goldlist+=[35]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and radzombielife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and radzombielife <= 0:
-                print('IT\'S A DRAW!')
-
-
-           if opponent == 2:
-            print('You have chosen to fight against Human-gladiator.')
-            humgladlife = 175
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Human-gladiator life:',humgladlife)
-            print('Human-gladiator damage: 35')
-            print('**********************')
-            print('Human-gladiator says: - YOU DON\'T HAVE A CHANCE AGAINST WELL-TRAINED GLADIATOR!')
-            while humgladlife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Human-gladiator attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-                pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Human-gladiator attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Human-gladiator attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Human-gladiator attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-35]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nHuman-gladiator life:',humgladlife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-                pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           radzombielife-=damage
-                           print('*************************')
-                           print('Human-gladiator life:',humgladlife)
-                           print('*************************')
-            if life > 0 and humgladlife <= 0:
-                print('YOU WIN!')
-                goldlist+=[75]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and humgladlife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and humgladlife <= 0:
-                print('IT\'S A DRAW!')
-
-
-        if opponent == 3:
-            print('You have chosen to fight against Big-mutant-on-steroids.')
-            mutantlife = 250
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Big-mutant-on-steroids life:',mutantlife)
-            print('Big-mutant-on-steroids damage: 35')
-            print('**********************')
-            print('Big-mutant-on-steroids says: - GIT OVAH HERE, YOU LITTLE,PATHETIC WEAKLING!!!')
-            while mutantlife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Big-mutant-on-steroids attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-                pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Big-mutant-on-steroids attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Big-mutant-on-steroids attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Big-mutant-on-steroids attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           print('You have been hit!')
-                                           print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                           lifelist+=[-50]
-                                           life=sum(lifelist)
-                                           dmg(lifelist,manalist,damagelist)
-                                           damage=sum(damagelist)//10
-                                           evade(lifelist,manalist,evadelist)
-                                           evasion=sum(evadelist)//20
-                                           print('*****************')
-                                           print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nBig-mutant-on-steroids life:',mutantlife)
-                                           print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-                pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           mutantlife-=damage
-                           print('*********************************')
-                           print('Big-mutant-on-steroids life:',mutantlife)
-                           print('*********************************')
-            if life > 0 and mutantlife <= 0:
-                print('YOU WIN!')
-                goldlist+=[150]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and mutantlife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and mutantlife <= 0:
-                print('IT\'S A DRAW!')
-
-
-        if opponent == 4:
-            print('You have chosen to fight against Cyborg.')
-            cyborglife = 300
-            evasion=sum(evadelist)//20
-            print('**********************')
-            print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion)
-            print('Cyborg life:',cyborglife)
-            print('Cyborg damage: 55')
-            print('**********************')
-            print('Cyborg says: - ...SCANNER:ACTIVATED...TARGET:LOCKED...ALL SYSTEMS ENGAGE!!!')
-            while cyborglife > 0 and life > 0:
-                print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                print('Cyborg attacks!')
-                print('*****************************************')
-                attack=randint(1,3)
-                pl_block=int(input('Enter:\n1 - for HIGH BLOCK\n2 -for MIDDLE BLOCK\n3 - for LOW BLOCK\nEnter::'))
-                if attack == pl_block:
-                              print('You succesfully blocked the attack!')
-                else:
-                              if attack == 1:
-                                  print('Cyborg attacked your HEAD!')
-                              elif attack == 2:
-                                  print('Cyborg attacked your TORSO!')
-                              elif attack == 3:
-                                  print('Cyborg attacked your LEGS!')
-
-                              print('You\'ve failed to block the attack!')
-
-                              battlechance=randint(1,100)
-
-                              num=sum(evadelist)//20
-
-                              if battlechance >= 1 and battlechance <= num:
-                                           print('You\'ve succesfully evaded the attack!')
-                              else:
-                                           critical=randint(1,6)
-                                           cyborgcalc=randint(1,6)
-                                           if critical == cyborgcalc:
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               print('You have received CRITICAL hit!')
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               lifelist+=[-100]
-                                               life=sum(lifelist)
-                                               dmg(lifelist,manalist,damagelist)
-                                               damage=sum(damagelist)//10
-                                               evade(lifelist,manalist,evadelist)
-                                               evasion=sum(evadelist)//20
-                                               print('*****************')
-                                               print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nBig-mutant-on-steroids life:',cyborglife)
-                                               print('*****************')
-
-                                           else:
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               print('You have been hit!')
-                                               print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                                               lifelist+=[-50]
-                                               life=sum(lifelist)
-                                               dmg(lifelist,manalist,damagelist)
-                                               damage=sum(damagelist)//10
-                                               evade(lifelist,manalist,evadelist)
-                                               evasion=sum(evadelist)//20
-                                               print('*****************')
-                                               print('Your life:',life,'\nYour damage:',damage,'\nYour evasion:',evasion,'\nCyborg life:',cyborglife)
-                                               print('*****************')
-                print('\nIt\'s YOUR TURN now. Choose your attack!')
-                pl_attack=int(input('Enter:\n1 - for HIGH ATTACK\n2 -for MIDDLE ATTACK\n3 - for LOW ATTACK\nEnter::'))
-                print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-                print(name,'attacks!')
-                print('*****************************************')
-                block=randint(1,3)
-                if pl_attack == block:
-                           print('Enemy has blocked your attack!')
-                else:
-                           print('You have hit that bastard!')
-                           cyborglife-=damage
-                           print('*********************************')
-                           print('Cyborg life:',cyborglife)
-                           print('*********************************')
-            if life > 0 and cyborglife <= 0:
-                print('YOU WIN!')
-                goldlist+=[250]
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and cyborglife > 0:
-                print('YOU LOSE!')
-                return goldlist,lifelist,damagelist,evadelist
-            elif life <= 0 and cyborglife <= 0:
-                print('IT\'S A DRAW!')
-                return goldlist,lifelist,damagelist,evadelist
-
-
+            enemy_words = 'I\'M GONNA EAT YOUR BRAIN!!! AND YOUR TOES, ARRRRGH!!!'
+            duel('Rad-Zombie', 125, 25, enemy_words)
+        elif opponent == 2:
+            enemy_words = 'YOU DON\'T HAVE A CHANCE AGAINST WELL-TRAINED GLADIATOR!'
+            duel('Human-Gladiator', 175, 25, enemy_words)
+        elif opponent == 3:
+            enemy_words = 'GIT OVAH HERE, YOU LITTLE,PATHETIC WEAKLING!!!'
+            duel('Big-Mutant-On-Steroids', 250, 35, enemy_words)
+        elif opponent == 4:
+            enemy_words = '...SCANNER:ACTIVATED...TARGET:LOCKED...ALL SYSTEMS ENGAGE!!!'
+            duel('Cyborg', 300, 55, enemy_words)
+        elif opponent == 6:
+            print(f'Courage have left you {name}, right. See you next time cry-baby.')
+
+### START OF GAME - LIKE 'MAIN'
 start_time = time.time()
-print('Your are surviving adventurer in post-apocalyptic world. \nYour goal is to earn 300 gold and not to die.\nYou can fight in the city Arena or go to on a journey.\n Journey is scavaging expedition into the wasteland around city.')
-status(life,mana,gold,damage,evasion)
-name=input('Enter your name::')
-
-traits(lifelist,manalist,goldlist)
-dmg(lifelist,manalist,damagelist)
+print("""Your are surviving adventurer in post-apocalyptic world.
+Your goal is to earn 300 gold and not to die.
+You can fight in the city Arena or go to on a journey.
+Journey is scavaging expedition into the wasteland around city.""")
+name = input('Enter your name::')
+choose_player_traits()
+calculate_damage(lifelist,manalist,damagelist)
 evade(lifelist,manalist,evadelist)
 life = sum(lifelist)
 mana = sum(manalist)
 gold = sum(goldlist)
-damage = int(sum(damagelist)/10)
-evasion = int(sum(evadelist)/20)
-
-
-status(life,mana,gold,damage,evasion)
-
-while gold<300:
-         if life<=0:
-             end_time =round (time.time() - start_time)
-             print('You are DEAD!!! GAME OVER')
-             print('Time of playing this game:',end_time,'seconds.')
-             time.sleep(3)
-             sys.exit()
-
+damage = int(sum(damagelist) / 10)
+evasion = int(sum(evadelist) / 20)
+show_player_stats(life, mana, gold, damage, evasion)
+while (gold < winning_amount):
+         if life <= 0:
+             you_lose(life)
          else:
-
-             choose()
-             dmg(lifelist,manalist,damagelist)
-             evade(lifelist,manalist,evadelist)
+             choose_player_action()
+             calculate_damage(lifelist, manalist, damagelist)
+             evade(lifelist, manalist, evadelist)
              life = sum(lifelist)
              mana = sum(manalist)
              gold = sum(goldlist)
-             damage =int(sum(damagelist)/10)
-             evasion = int(sum(evadelist)/20)
-             status(life,mana,gold,damage,evasion)
-print('CONGRATULATIONS! You have won in this game!')
-end_time = round (time.time() - start_time)
-print('Time of playing this game:',end_time,'seconds.')
-print('Your stats:\nLIFE:',life,'\nMANA:',mana,'\nGOLD:',gold)
-time.sleep(3)
-sys.exit()
-
-
-
+             damage =int(sum(damagelist) / 10)
+             evasion = int(sum(evadelist) / 20)
+             show_player_stats(life, mana, gold, damage, evasion)
+you_won()
